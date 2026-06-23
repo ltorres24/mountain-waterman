@@ -9,6 +9,7 @@ import {
 
 import { workouts, targets } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
+import ExerciseCard from "./ExerciseCard.jsx";
 import "./style.css";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
   function addSet(exerciseName) {
     const key = `${day}-${exerciseName}`;
     const current = logs[key] || [];
+
     setLogs({
       ...logs,
       [key]: [...current, { weight: "", reps: "", rpe: "" }],
@@ -62,7 +64,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.0</p>
+        <p className="eyebrow">Mountain Waterman v3.1</p>
         <h1>Training Mission Control</h1>
         <p>Strength · Surf · Trail · Freedive · Spearfish</p>
       </header>
@@ -79,6 +81,7 @@ export default function App() {
             <div className="card">
               <h2>Readiness</h2>
               <p>{readiness} Day</p>
+
               <div className="button-row">
                 {["Green", "Yellow", "Red"].map((r) => (
                   <button
@@ -90,10 +93,16 @@ export default function App() {
                   </button>
                 ))}
               </div>
+
+              <p>
+                Green = full session. Yellow = main lifts + reduced accessories.
+                Red = mobility, correctives, and light technique only.
+              </p>
             </div>
 
             <div className="card wide">
               <h2>Recent Workouts</h2>
+
               {completed.length === 0 ? (
                 <p>No workouts completed yet.</p>
               ) : (
@@ -130,45 +139,17 @@ export default function App() {
                 const sets = logs[key] || [];
 
                 return (
-                  <div className="exercise" key={name}>
-                    <div className="exercise-head">
-                      <div>
-                        <h3>{name}</h3>
-                        <p>
-                          Goal: {goal} · {intensity}
-                        </p>
-                      </div>
-                    </div>
-
-                    {sets.map((set, i) => (
-                      <div className="set-row" key={i}>
-                        <span>Set {i + 1}</span>
-                        <input
-                          placeholder="Weight"
-                          value={set.weight}
-                          onChange={(e) =>
-                            updateSet(name, i, "weight", e.target.value)
-                          }
-                        />
-                        <input
-                          placeholder="Reps"
-                          value={set.reps}
-                          onChange={(e) =>
-                            updateSet(name, i, "reps", e.target.value)
-                          }
-                        />
-                        <input
-                          placeholder="RPE"
-                          value={set.rpe}
-                          onChange={(e) =>
-                            updateSet(name, i, "rpe", e.target.value)
-                          }
-                        />
-                      </div>
-                    ))}
-
-                    <button onClick={() => addSet(name)}>+ Add Set</button>
-                  </div>
+                  <ExerciseCard
+                    key={name}
+                    name={name}
+                    goal={goal}
+                    intensity={intensity}
+                    sets={sets}
+                    onAddSet={() => addSet(name)}
+                    onUpdateSet={(index, field, value) =>
+                      updateSet(name, index, field, value)
+                    }
+                  />
                 );
               })}
             </div>
@@ -182,6 +163,7 @@ export default function App() {
         {tab === "progress" && (
           <section className="card">
             <h2>Strength Targets</h2>
+
             {targets.map(([name, current, target]) => (
               <div className="target" key={name}>
                 <div>
@@ -191,7 +173,11 @@ export default function App() {
                     {name === "Pull-ups" ? " reps" : " lb"}
                   </span>
                 </div>
-                <progress value={Math.round((current / target) * 100)} max="100" />
+
+                <progress
+                  value={Math.round((current / target) * 100)}
+                  max="100"
+                />
               </div>
             ))}
           </section>
@@ -203,14 +189,17 @@ export default function App() {
               <h2>Shoulders</h2>
               <p>Face pulls, wall slides, serratus work, mace 360s.</p>
             </div>
+
             <div className="card">
               <h2>Neck / Traps</h2>
               <p>Chin tucks, dead hangs, thoracic mobility, lower traps.</p>
             </div>
+
             <div className="card">
               <h2>Elbows</h2>
               <p>Hammer curls, reverse curls, wrist extensor work.</p>
             </div>
+
             <div className="card">
               <h2>Hips / Glutes</h2>
               <p>Monster walks, hip airplanes, GHD work, split squats.</p>
@@ -222,27 +211,47 @@ export default function App() {
           <section className="card">
             <h2>App Notes</h2>
             <p>
-              Data is currently saved locally on your device. Next: recovery
-              score, pain tracker, and automatic recommendations.
+              Data is currently saved locally on your device. Next upgrades:
+              recovery score, pain tracker, automatic recommendations, and a
+              16-week calendar.
             </p>
           </section>
         )}
       </main>
 
       <nav className="bottom-nav">
-        <button onClick={() => setTab("home")} className={tab === "home" ? "active" : ""}>
+        <button
+          onClick={() => setTab("home")}
+          className={tab === "home" ? "active" : ""}
+        >
           <Home /> Home
         </button>
-        <button onClick={() => setTab("train")} className={tab === "train" ? "active" : ""}>
+
+        <button
+          onClick={() => setTab("train")}
+          className={tab === "train" ? "active" : ""}
+        >
           <Dumbbell /> Train
         </button>
-        <button onClick={() => setTab("progress")} className={tab === "progress" ? "active" : ""}>
+
+        <button
+          onClick={() => setTab("progress")}
+          className={tab === "progress" ? "active" : ""}
+        >
           <BarChart3 /> Progress
         </button>
-        <button onClick={() => setTab("recovery")} className={tab === "recovery" ? "active" : ""}>
+
+        <button
+          onClick={() => setTab("recovery")}
+          className={tab === "recovery" ? "active" : ""}
+        >
           <HeartPulse /> Recovery
         </button>
-        <button onClick={() => setTab("more")} className={tab === "more" ? "active" : ""}>
+
+        <button
+          onClick={() => setTab("more")}
+          className={tab === "more" ? "active" : ""}
+        >
           <Settings /> More
         </button>
       </nav>

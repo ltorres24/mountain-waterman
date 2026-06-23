@@ -5,6 +5,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
 import RecoveryCheck from "./RecoveryCheck.jsx";
 import BottomNav from "./components/BottomNav.jsx";
+import AthleteProfile from "./AthleteProfile.jsx";
 import "./style.css";
 
 export default function App() {
@@ -29,7 +30,11 @@ export default function App() {
   function addSet(exerciseName) {
     const key = `${day}-${exerciseName}`;
     const current = logs[key] || [];
-    setLogs({ ...logs, [key]: [...current, { weight: "", reps: "", rpe: "" }] });
+
+    setLogs({
+      ...logs,
+      [key]: [...current, { weight: "", reps: "", rpe: "" }],
+    });
   }
 
   function updateSet(exerciseName, index, field, value) {
@@ -44,7 +49,10 @@ export default function App() {
       [field]: value,
     };
 
-    setLogs({ ...logs, [key]: current });
+    setLogs({
+      ...logs,
+      [key]: current,
+    });
   }
 
   function completeWorkout() {
@@ -62,7 +70,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.3</p>
+        <p className="eyebrow">Mountain Waterman v3.4</p>
         <h1>Training Mission Control</h1>
         <p>Strength · Surf · Trail · Freedive · Spearfish</p>
       </header>
@@ -79,6 +87,7 @@ export default function App() {
             <div className="card">
               <h2>Readiness</h2>
               <p>{readiness} Day</p>
+
               <div className="button-row">
                 {["Green", "Yellow", "Red"].map((r) => (
                   <button
@@ -96,6 +105,7 @@ export default function App() {
 
             <div className="card wide">
               <h2>Recent Workouts</h2>
+
               {completed.length === 0 ? (
                 <p>No workouts completed yet.</p>
               ) : (
@@ -156,6 +166,7 @@ export default function App() {
         {tab === "progress" && (
           <section className="card">
             <h2>Strength Targets</h2>
+
             {targets.map(([name, current, target]) => (
               <div className="target" key={name}>
                 <div>
@@ -165,6 +176,7 @@ export default function App() {
                     {name === "Pull-ups" ? " reps" : " lb"}
                   </span>
                 </div>
+
                 <progress
                   value={Math.round((current / target) * 100)}
                   max="100"
@@ -180,15 +192,7 @@ export default function App() {
           </section>
         )}
 
-        {tab === "more" && (
-          <section className="card">
-            <h2>App Notes</h2>
-            <p>
-              Data is saved locally on your device. Next: page components and
-              Athlete Profile.
-            </p>
-          </section>
-        )}
+        {tab === "more" && <AthleteProfile />}
       </main>
 
       <BottomNav tab={tab} setTab={setTab} />

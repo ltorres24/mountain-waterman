@@ -1,0 +1,9 @@
+{
+  "name": "Mountain Waterman Strength System",
+  "short_name": "Waterman",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D1F2D",
+  "theme_color": "#0D1F2D",
+  "icons": []
+}

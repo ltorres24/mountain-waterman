@@ -10,6 +10,7 @@ import {
 import { workouts, targets } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
+import RecoveryCheck from "./RecoveryCheck.jsx";
 import "./style.css";
 
 export default function App() {
@@ -18,13 +19,22 @@ export default function App() {
   const [readiness, setReadiness] = useLocalStorage("mw-readiness", "Green");
   const [completed, setCompleted] = useLocalStorage("mw-completed", []);
   const [logs, setLogs] = useLocalStorage("mw-logs", {});
+  const [recovery, setRecovery] = useLocalStorage("mw-recovery", {
+    sleep: 6,
+    energy: 6,
+    stress: 3,
+    shoulder: 2,
+    elbow: 2,
+    neck: 3,
+    hip: 2,
+    back: 2,
+  });
 
   const workout = workouts[day];
 
   function addSet(exerciseName) {
     const key = `${day}-${exerciseName}`;
     const current = logs[key] || [];
-
     setLogs({
       ...logs,
       [key]: [...current, { weight: "", reps: "", rpe: "" }],
@@ -64,7 +74,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.1</p>
+        <p className="eyebrow">Mountain Waterman v3.2</p>
         <h1>Training Mission Control</h1>
         <p>Strength · Surf · Trail · Freedive · Spearfish</p>
       </header>
@@ -81,7 +91,6 @@ export default function App() {
             <div className="card">
               <h2>Readiness</h2>
               <p>{readiness} Day</p>
-
               <div className="button-row">
                 {["Green", "Yellow", "Red"].map((r) => (
                   <button
@@ -93,16 +102,12 @@ export default function App() {
                   </button>
                 ))}
               </div>
-
-              <p>
-                Green = full session. Yellow = main lifts + reduced accessories.
-                Red = mobility, correctives, and light technique only.
-              </p>
             </div>
+
+            <RecoveryCheck recovery={recovery} setRecovery={setRecovery} />
 
             <div className="card wide">
               <h2>Recent Workouts</h2>
-
               {completed.length === 0 ? (
                 <p>No workouts completed yet.</p>
               ) : (
@@ -163,7 +168,6 @@ export default function App() {
         {tab === "progress" && (
           <section className="card">
             <h2>Strength Targets</h2>
-
             {targets.map(([name, current, target]) => (
               <div className="target" key={name}>
                 <div>
@@ -173,7 +177,6 @@ export default function App() {
                     {name === "Pull-ups" ? " reps" : " lb"}
                   </span>
                 </div>
-
                 <progress
                   value={Math.round((current / target) * 100)}
                   max="100"
@@ -185,25 +188,7 @@ export default function App() {
 
         {tab === "recovery" && (
           <section className="grid">
-            <div className="card">
-              <h2>Shoulders</h2>
-              <p>Face pulls, wall slides, serratus work, mace 360s.</p>
-            </div>
-
-            <div className="card">
-              <h2>Neck / Traps</h2>
-              <p>Chin tucks, dead hangs, thoracic mobility, lower traps.</p>
-            </div>
-
-            <div className="card">
-              <h2>Elbows</h2>
-              <p>Hammer curls, reverse curls, wrist extensor work.</p>
-            </div>
-
-            <div className="card">
-              <h2>Hips / Glutes</h2>
-              <p>Monster walks, hip airplanes, GHD work, split squats.</p>
-            </div>
+            <RecoveryCheck recovery={recovery} setRecovery={setRecovery} />
           </section>
         )}
 
@@ -211,47 +196,27 @@ export default function App() {
           <section className="card">
             <h2>App Notes</h2>
             <p>
-              Data is currently saved locally on your device. Next upgrades:
-              recovery score, pain tracker, automatic recommendations, and a
-              16-week calendar.
+              Data is saved locally on your device. Next: automatic
+              recommendations and pain-based exercise swaps.
             </p>
           </section>
         )}
       </main>
 
       <nav className="bottom-nav">
-        <button
-          onClick={() => setTab("home")}
-          className={tab === "home" ? "active" : ""}
-        >
+        <button onClick={() => setTab("home")} className={tab === "home" ? "active" : ""}>
           <Home /> Home
         </button>
-
-        <button
-          onClick={() => setTab("train")}
-          className={tab === "train" ? "active" : ""}
-        >
+        <button onClick={() => setTab("train")} className={tab === "train" ? "active" : ""}>
           <Dumbbell /> Train
         </button>
-
-        <button
-          onClick={() => setTab("progress")}
-          className={tab === "progress" ? "active" : ""}
-        >
+        <button onClick={() => setTab("progress")} className={tab === "progress" ? "active" : ""}>
           <BarChart3 /> Progress
         </button>
-
-        <button
-          onClick={() => setTab("recovery")}
-          className={tab === "recovery" ? "active" : ""}
-        >
+        <button onClick={() => setTab("recovery")} className={tab === "recovery" ? "active" : ""}>
           <HeartPulse /> Recovery
         </button>
-
-        <button
-          onClick={() => setTab("more")}
-          className={tab === "more" ? "active" : ""}
-        >
+        <button onClick={() => setTab("more")} className={tab === "more" ? "active" : ""}>
           <Settings /> More
         </button>
       </nav>

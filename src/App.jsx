@@ -1,16 +1,10 @@
 import React, { useState } from "react";
-import {
-  Home,
-  Dumbbell,
-  BarChart3,
-  HeartPulse,
-  Settings,
-} from "lucide-react";
 
 import { workouts, targets } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
 import RecoveryCheck from "./RecoveryCheck.jsx";
+import BottomNav from "./components/BottomNav.jsx";
 import "./style.css";
 
 export default function App() {
@@ -35,10 +29,7 @@ export default function App() {
   function addSet(exerciseName) {
     const key = `${day}-${exerciseName}`;
     const current = logs[key] || [];
-    setLogs({
-      ...logs,
-      [key]: [...current, { weight: "", reps: "", rpe: "" }],
-    });
+    setLogs({ ...logs, [key]: [...current, { weight: "", reps: "", rpe: "" }] });
   }
 
   function updateSet(exerciseName, index, field, value) {
@@ -53,10 +44,7 @@ export default function App() {
       [field]: value,
     };
 
-    setLogs({
-      ...logs,
-      [key]: current,
-    });
+    setLogs({ ...logs, [key]: current });
   }
 
   function completeWorkout() {
@@ -74,7 +62,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.2</p>
+        <p className="eyebrow">Mountain Waterman v3.3</p>
         <h1>Training Mission Control</h1>
         <p>Strength · Surf · Trail · Freedive · Spearfish</p>
       </header>
@@ -196,30 +184,14 @@ export default function App() {
           <section className="card">
             <h2>App Notes</h2>
             <p>
-              Data is saved locally on your device. Next: automatic
-              recommendations and pain-based exercise swaps.
+              Data is saved locally on your device. Next: page components and
+              Athlete Profile.
             </p>
           </section>
         )}
       </main>
 
-      <nav className="bottom-nav">
-        <button onClick={() => setTab("home")} className={tab === "home" ? "active" : ""}>
-          <Home /> Home
-        </button>
-        <button onClick={() => setTab("train")} className={tab === "train" ? "active" : ""}>
-          <Dumbbell /> Train
-        </button>
-        <button onClick={() => setTab("progress")} className={tab === "progress" ? "active" : ""}>
-          <BarChart3 /> Progress
-        </button>
-        <button onClick={() => setTab("recovery")} className={tab === "recovery" ? "active" : ""}>
-          <HeartPulse /> Recovery
-        </button>
-        <button onClick={() => setTab("more")} className={tab === "more" ? "active" : ""}>
-          <Settings /> More
-        </button>
-      </nav>
+      <BottomNav tab={tab} setTab={setTab} />
     </div>
   );
 }

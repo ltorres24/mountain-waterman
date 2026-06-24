@@ -1,9 +1,35 @@
-export default function RecoveryCheck({ recovery, setRecovery }) {
+export default function RecoveryCheck({
+  recovery,
+  setRecovery,
+  onStatusChange,
+}) {
   function update(field, value) {
-    setRecovery({
+    const next = {
       ...recovery,
       [field]: Number(value),
-    });
+    };
+
+    setRecovery(next);
+
+    const score =
+      100 -
+      next.stress * 8 -
+      next.shoulder * 6 -
+      next.elbow * 6 -
+      next.neck * 5 -
+      next.hip * 5 -
+      next.back * 5 +
+      next.sleep * 4 +
+      next.energy * 4;
+
+    const finalScore = Math.max(0, Math.min(100, Math.round(score)));
+
+    let status = "Green";
+
+    if (finalScore < 70) status = "Yellow";
+    if (finalScore < 50) status = "Red";
+
+    onStatusChange(status);
   }
 
   const score =
@@ -20,6 +46,7 @@ export default function RecoveryCheck({ recovery, setRecovery }) {
   const finalScore = Math.max(0, Math.min(100, Math.round(score)));
 
   let status = "Green";
+
   if (finalScore < 70) status = "Yellow";
   if (finalScore < 50) status = "Red";
 
@@ -28,19 +55,28 @@ export default function RecoveryCheck({ recovery, setRecovery }) {
       <h2>Recovery Check</h2>
 
       <div className="score-box">
-        <div className={`score ${status.toLowerCase()}`}>{finalScore}%</div>
+        <div className={`score ${status.toLowerCase()}`}>
+          {finalScore}%
+        </div>
+
         <div>
           <h3>{status} Day</h3>
+
           <p>
-            {status === "Green" && "Train normally."}
-            {status === "Yellow" && "Keep main lifts, reduce accessories."}
-            {status === "Red" && "Mobility, correctives, and light technique only."}
+            {status === "Green" &&
+              "Train normally. Full intensity."}
+
+            {status === "Yellow" &&
+              "Keep main lifts. Reduce accessory volume 25%."}
+
+            {status === "Red" &&
+              "Mobility, Zone 2, and corrective work only."}
           </p>
         </div>
       </div>
 
       {[
-        ["sleep", "Sleep Quality"],
+        ["sleep", "Sleep"],
         ["energy", "Energy"],
         ["stress", "Stress"],
         ["shoulder", "Shoulder Pain"],
@@ -50,7 +86,10 @@ export default function RecoveryCheck({ recovery, setRecovery }) {
         ["back", "Back Pain"],
       ].map(([key, label]) => (
         <label className="slider-row" key={key}>
-          <span>{label}: {recovery[key]}</span>
+          <span>
+            {label}: {recovery[key]}
+          </span>
+
           <input
             type="range"
             min="0"

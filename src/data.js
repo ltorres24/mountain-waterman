@@ -13,8 +13,8 @@ export const workouts = {
       ["Hammer Curl", "2 x 12", "Easy"],
       ["Cable Chop", "3 x 10/side", "Controlled"],
       ["Ab Wheel", "3 x 8", "Controlled"],
-      ["Farmer Carry", "4 x 40 yd", "Heavy"]
-    ]
+      ["Farmer Carry", "4 x 40 yd", "Heavy"],
+    ],
   },
   Wednesday: {
     title: "Light Squat + Press",
@@ -29,8 +29,8 @@ export const workouts = {
       ["Mace 360", "3 x 10/dir", "Light"],
       ["Band External Rotation", "3 x 15", "Easy"],
       ["Chin Tucks", "2 x 15", "Easy"],
-      ["Side Plank", "3 x 30–45 sec", "Controlled"]
-    ]
+      ["Side Plank", "3 x 30–45 sec", "Controlled"],
+    ],
   },
   Friday: {
     title: "Front Squat + Athletic Strength",
@@ -45,9 +45,42 @@ export const workouts = {
       ["Bottom-up KB Carry", "3 x 30 yd/arm", "Moderate"],
       ["Cable Lift", "3 x 10/side", "Controlled"],
       ["Dead Hang", "3 sets", "Near max"],
-      ["Suitcase Carry", "3 x 40 yd/side", "Heavy"]
-    ]
-  }
+      ["Suitcase Carry", "3 x 40 yd/side", "Heavy"],
+    ],
+  },
+};
+
+export const warmups = {
+  Monday: [
+    "Foam roll T-spine, glutes, hip flexors — 3 min",
+    "Deep squat hold — 60 sec",
+    "Ankle rocks — 15/side",
+    "90/90 hip switches — 10/side",
+    "Monster walks — 15/side",
+    "Single-leg glute bridge — 10/side",
+    "Dead bug — 8/side",
+    "Box jump ramp-up — 3 x 3",
+  ],
+  Wednesday: [
+    "Foam roll T-spine and lats — 3 min",
+    "Thoracic rotations — 10/side",
+    "Band pull-aparts — 20",
+    "Wall slides — 12",
+    "Serratus wall slides — 10",
+    "Band external rotation — 15/side",
+    "Chin tucks — 10",
+    "Light mace 360 — 2 x 10/dir",
+  ],
+  Friday: [
+    "Foam roll T-spine, glutes, hip flexors — 3 min",
+    "World's Greatest Stretch — 5/side",
+    "90/90 hip switches — 10/side",
+    "Mace halo — 2 x 10/dir",
+    "Monster walks — 15/side",
+    "Pallof press — 10/side",
+    "Kettlebell swing ramp-up — 2 x 8",
+    "Empty bar front squat — 2 x 5",
+  ],
 };
 
 export const targets = [
@@ -56,18 +89,5 @@ export const targets = [
   ["Deadlift", 250, 365],
   ["Bench Press", 160, 225],
   ["Overhead Press", 100, 145],
-  ["Pull-ups", 10, 18]
-];
-
-export const warmup = [
-  "Foam roll T-spine/lats/glutes/hip flexors — 3 min",
-  "Deep squat hold — 60 sec",
-  "World's Greatest Stretch — 5/side",
-  "90/90 hip switches — 10/side",
-  "Band pull-aparts — 20",
-  "Wall slides — 12",
-  "Monster walks — 15/side",
-  "Dead bug — 8/side",
-  "Bird dog — 8/side",
-  "Pallof press — 10/side"
+  ["Pull-ups", 10, 18],
 ];

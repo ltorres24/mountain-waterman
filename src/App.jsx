@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { workouts, targets, warmups } from "./data";
+import { phases, targets, warmups, conditioning } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
 import RecoveryCheck from "./RecoveryCheck.jsx";
@@ -10,6 +10,7 @@ import "./style.css";
 
 export default function App() {
   const [tab, setTab] = useState("home");
+  const [phase, setPhase] = useLocalStorage("mw-phase", "Phase1");
   const [day, setDay] = useLocalStorage("mw-day", "Monday");
   const [readiness, setReadiness] = useLocalStorage("mw-readiness", "Green");
   const [completed, setCompleted] = useLocalStorage("mw-completed", []);
@@ -25,10 +26,11 @@ export default function App() {
     back: 2,
   });
 
-  const workout = workouts[day];
+  const currentPhase = phases[phase];
+  const workout = currentPhase[day];
 
   function addSet(exercise) {
-    const key = `${day}-${exercise}`;
+    const key = `${phase}-${day}-${exercise}`;
     const current = logs[key] || [];
 
     setLogs({
@@ -38,7 +40,7 @@ export default function App() {
   }
 
   function updateSet(exercise, index, field, value) {
-    const key = `${day}-${exercise}`;
+    const key = `${phase}-${day}-${exercise}`;
     const current = [...(logs[key] || [])];
 
     current[index] = {
@@ -59,6 +61,7 @@ export default function App() {
     setCompleted([
       {
         date: new Date().toLocaleDateString(),
+        phase: currentPhase.name,
         title: workout.title,
         day,
         readiness,
@@ -70,9 +73,9 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.6</p>
+        <p className="eyebrow">Mountain Waterman v4.0</p>
         <h1>Training Mission Control</h1>
-        <p>Strength · Surf · Trail · Freedive · Spearfish</p>
+        <p>{currentPhase.name}</p>
       </header>
 
       <main>
@@ -92,12 +95,40 @@ export default function App() {
               </h3>
 
               <p>
-                {readiness === "Green" && "Train normally. Push performance."}
+                {readiness === "Green" && "Train normally."}
                 {readiness === "Yellow" &&
                   "Keep the main lifts. Reduce accessory work by about 25%."}
                 {readiness === "Red" &&
                   "Recovery day. Mobility, Zone 2 and corrective work only."}
               </p>
+            </div>
+
+            <div className="card">
+              <h2>Program</h2>
+
+              <div className="button-row">
+                {Object.keys(phases).map((p) => (
+                  <button
+                    key={p}
+                    className={phase === p ? "selected" : ""}
+                    onClick={() => setPhase(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+
+              <div className="button-row">
+                {["Monday", "Wednesday", "Friday"].map((d) => (
+                  <button
+                    key={d}
+                    className={day === d ? "selected" : ""}
+                    onClick={() => setDay(d)}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <RecoveryCheck
@@ -107,6 +138,15 @@ export default function App() {
             />
 
             <div className="card wide">
+              <h2>Conditioning</h2>
+              {Object.entries(conditioning).map(([d, item]) => (
+                <p key={d}>
+                  <strong>{d}:</strong> {item}
+                </p>
+              ))}
+            </div>
+
+            <div className="card wide">
               <h2>Recent Workouts</h2>
 
               {completed.length === 0 ? (
@@ -114,7 +154,7 @@ export default function App() {
               ) : (
                 completed.slice(0, 5).map((w, i) => (
                   <div className="history" key={i}>
-                    {w.date} • {w.day} • {w.title} • {w.readiness}
+                    {w.date} • {w.phase} • {w.day} • {w.title} • {w.readiness}
                   </div>
                 ))
               )}
@@ -128,7 +168,19 @@ export default function App() {
             <p>{workout.focus}</p>
 
             <div className="button-row">
-              {Object.keys(workouts).map((d) => (
+              {Object.keys(phases).map((p) => (
+                <button
+                  key={p}
+                  className={phase === p ? "selected" : ""}
+                  onClick={() => setPhase(p)}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            <div className="button-row">
+              {["Monday", "Wednesday", "Friday"].map((d) => (
                 <button
                   key={d}
                   className={day === d ? "selected" : ""}
@@ -150,12 +202,12 @@ export default function App() {
 
             <div className="exercise-list">
               {workout.exercises.map(([name, goal, intensity]) => {
-                const key = `${day}-${name}`;
+                const key = `${phase}-${day}-${name}`;
                 const sets = logs[key] || [];
 
                 return (
                   <ExerciseCard
-                    key={name}
+                    key={key}
                     name={name}
                     goal={goal}
                     intensity={intensity}

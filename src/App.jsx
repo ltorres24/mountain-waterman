@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { workouts, targets, warmup } from "./data";
+import { workouts, targets, warmups } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
 import RecoveryCheck from "./RecoveryCheck.jsx";
@@ -10,34 +10,20 @@ import "./style.css";
 
 export default function App() {
   const [tab, setTab] = useState("home");
-
   const [day, setDay] = useLocalStorage("mw-day", "Monday");
-
-  const [readiness, setReadiness] = useLocalStorage(
-    "mw-readiness",
-    "Green"
-  );
-
-  const [completed, setCompleted] = useLocalStorage(
-    "mw-completed",
-    []
-  );
-
+  const [readiness, setReadiness] = useLocalStorage("mw-readiness", "Green");
+  const [completed, setCompleted] = useLocalStorage("mw-completed", []);
   const [logs, setLogs] = useLocalStorage("mw-logs", {});
-
-  const [recovery, setRecovery] = useLocalStorage(
-    "mw-recovery",
-    {
-      sleep: 6,
-      energy: 6,
-      stress: 3,
-      shoulder: 2,
-      elbow: 2,
-      neck: 3,
-      hip: 2,
-      back: 2,
-    }
-  );
+  const [recovery, setRecovery] = useLocalStorage("mw-recovery", {
+    sleep: 6,
+    energy: 6,
+    stress: 3,
+    shoulder: 2,
+    elbow: 2,
+    neck: 3,
+    hip: 2,
+    back: 2,
+  });
 
   const workout = workouts[day];
 
@@ -47,20 +33,12 @@ export default function App() {
 
     setLogs({
       ...logs,
-      [key]: [
-        ...current,
-        {
-          weight: "",
-          reps: "",
-          rpe: "",
-        },
-      ],
+      [key]: [...current, { weight: "", reps: "", rpe: "" }],
     });
   }
 
   function updateSet(exercise, index, field, value) {
     const key = `${day}-${exercise}`;
-
     const current = [...(logs[key] || [])];
 
     current[index] = {
@@ -91,29 +69,18 @@ export default function App() {
 
   return (
     <div className="app">
-
       <header className="hero">
-        <p className="eyebrow">
-          Mountain Waterman v3.5
-        </p>
-
+        <p className="eyebrow">Mountain Waterman v3.6</p>
         <h1>Training Mission Control</h1>
-
-        <p>
-          Strength · Surf · Trail · Freedive · Spearfish
-        </p>
+        <p>Strength · Surf · Trail · Freedive · Spearfish</p>
       </header>
 
       <main>
-
         {tab === "home" && (
           <section className="grid">
-
             <div className="card">
               <h2>Today's Mission</h2>
-
               <h3>{workout.title}</h3>
-
               <p>{workout.focus}</p>
 
               <hr />
@@ -125,12 +92,9 @@ export default function App() {
               </h3>
 
               <p>
-                {readiness === "Green" &&
-                  "Train normally. Push performance."}
-
+                {readiness === "Green" && "Train normally. Push performance."}
                 {readiness === "Yellow" &&
                   "Keep the main lifts. Reduce accessory work by about 25%."}
-
                 {readiness === "Red" &&
                   "Recovery day. Mobility, Zone 2 and corrective work only."}
               </p>
@@ -155,15 +119,12 @@ export default function App() {
                 ))
               )}
             </div>
-
           </section>
         )}
 
         {tab === "train" && (
           <section className="card">
-
             <h2>{workout.title}</h2>
-
             <p>{workout.focus}</p>
 
             <div className="button-row">
@@ -178,12 +139,18 @@ export default function App() {
               ))}
             </div>
 
+            <div className="card warmup-card">
+              <h2>Warm-up</h2>
+              <ul>
+                {warmups[day].map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
             <div className="exercise-list">
-
               {workout.exercises.map(([name, goal, intensity]) => {
-
                 const key = `${day}-${name}`;
-
                 const sets = logs[key] || [];
 
                 return (
@@ -199,49 +166,35 @@ export default function App() {
                     }
                   />
                 );
-
               })}
-
             </div>
 
-            <button
-              className="complete"
-              onClick={completeWorkout}
-            >
+            <button className="complete" onClick={completeWorkout}>
               Complete Workout
             </button>
-
           </section>
         )}
 
         {tab === "progress" && (
           <section className="card">
-
             <h2>Strength Targets</h2>
 
             {targets.map(([name, current, target]) => (
               <div className="target" key={name}>
                 <div>
                   <strong>{name}</strong>
-
                   <span>
                     {current} → {target}
-                    {name === "Pull-ups"
-                      ? " reps"
-                      : " lb"}
+                    {name === "Pull-ups" ? " reps" : " lb"}
                   </span>
                 </div>
 
                 <progress
-                  value={Math.round(
-                    (current / target) * 100
-                  )}
+                  value={Math.round((current / target) * 100)}
                   max="100"
                 />
-
               </div>
             ))}
-
           </section>
         )}
 
@@ -254,14 +207,9 @@ export default function App() {
         )}
 
         {tab === "more" && <AthleteProfile />}
-
       </main>
 
-      <BottomNav
-        tab={tab}
-        setTab={setTab}
-      />
-
+      <BottomNav tab={tab} setTab={setTab} />
     </div>
   );
 }

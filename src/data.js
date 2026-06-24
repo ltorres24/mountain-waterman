@@ -58,3 +58,16 @@ export const targets = [
   ["Overhead Press", 100, 145],
   ["Pull-ups", 10, 18]
 ];
+
+export const warmup = [
+  "Foam roll T-spine/lats/glutes/hip flexors — 3 min",
+  "Deep squat hold — 60 sec",
+  "World's Greatest Stretch — 5/side",
+  "90/90 hip switches — 10/side",
+  "Band pull-aparts — 20",
+  "Wall slides — 12",
+  "Monster walks — 15/side",
+  "Dead bug — 8/side",
+  "Bird dog — 8/side",
+  "Pallof press — 10/side"
+];

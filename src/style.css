@@ -253,3 +253,15 @@ progress {
     margin-top: 6px;
   }
 }
+
+.video-link {
+  display: inline-block;
+  margin: 10px 0 14px;
+  color: #d4963a;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.video-link:hover {
+  text-decoration: underline;
+}

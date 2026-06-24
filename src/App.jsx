@@ -10,35 +10,57 @@ import "./style.css";
 
 export default function App() {
   const [tab, setTab] = useState("home");
+
   const [day, setDay] = useLocalStorage("mw-day", "Monday");
-  const [readiness, setReadiness] = useLocalStorage("mw-readiness", "Green");
-  const [completed, setCompleted] = useLocalStorage("mw-completed", []);
+
+  const [readiness, setReadiness] = useLocalStorage(
+    "mw-readiness",
+    "Green"
+  );
+
+  const [completed, setCompleted] = useLocalStorage(
+    "mw-completed",
+    []
+  );
+
   const [logs, setLogs] = useLocalStorage("mw-logs", {});
-  const [recovery, setRecovery] = useLocalStorage("mw-recovery", {
-    sleep: 6,
-    energy: 6,
-    stress: 3,
-    shoulder: 2,
-    elbow: 2,
-    neck: 3,
-    hip: 2,
-    back: 2,
-  });
+
+  const [recovery, setRecovery] = useLocalStorage(
+    "mw-recovery",
+    {
+      sleep: 6,
+      energy: 6,
+      stress: 3,
+      shoulder: 2,
+      elbow: 2,
+      neck: 3,
+      hip: 2,
+      back: 2,
+    }
+  );
 
   const workout = workouts[day];
 
-  function addSet(exerciseName) {
-    const key = `${day}-${exerciseName}`;
+  function addSet(exercise) {
+    const key = `${day}-${exercise}`;
     const current = logs[key] || [];
 
     setLogs({
       ...logs,
-      [key]: [...current, { weight: "", reps: "", rpe: "" }],
+      [key]: [
+        ...current,
+        {
+          weight: "",
+          reps: "",
+          rpe: "",
+        },
+      ],
     });
   }
 
-  function updateSet(exerciseName, index, field, value) {
-    const key = `${day}-${exerciseName}`;
+  function updateSet(exercise, index, field, value) {
+    const key = `${day}-${exercise}`;
+
     const current = [...(logs[key] || [])];
 
     current[index] = {
@@ -59,8 +81,8 @@ export default function App() {
     setCompleted([
       {
         date: new Date().toLocaleDateString(),
-        day,
         title: workout.title,
+        day,
         readiness,
       },
       ...completed,
@@ -69,39 +91,56 @@ export default function App() {
 
   return (
     <div className="app">
+
       <header className="hero">
-        <p className="eyebrow">Mountain Waterman v3.4</p>
+        <p className="eyebrow">
+          Mountain Waterman v3.5
+        </p>
+
         <h1>Training Mission Control</h1>
-        <p>Strength · Surf · Trail · Freedive · Spearfish</p>
+
+        <p>
+          Strength · Surf · Trail · Freedive · Spearfish
+        </p>
       </header>
 
       <main>
+
         {tab === "home" && (
           <section className="grid">
+
             <div className="card">
               <h2>Today's Mission</h2>
-              <p>{workout.title}</p>
+
+              <h3>{workout.title}</h3>
+
               <p>{workout.focus}</p>
+
+              <hr />
+
+              <h3>
+                {readiness === "Green" && "🟢 Green Day"}
+                {readiness === "Yellow" && "🟡 Yellow Day"}
+                {readiness === "Red" && "🔴 Red Day"}
+              </h3>
+
+              <p>
+                {readiness === "Green" &&
+                  "Train normally. Push performance."}
+
+                {readiness === "Yellow" &&
+                  "Keep the main lifts. Reduce accessory work by about 25%."}
+
+                {readiness === "Red" &&
+                  "Recovery day. Mobility, Zone 2 and corrective work only."}
+              </p>
             </div>
 
-            <div className="card">
-              <h2>Readiness</h2>
-              <p>{readiness} Day</p>
-
-              <div className="button-row">
-                {["Green", "Yellow", "Red"].map((r) => (
-                  <button
-                    key={r}
-                    className={readiness === r ? "selected" : ""}
-                    onClick={() => setReadiness(r)}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <RecoveryCheck recovery={recovery} setRecovery={setRecovery} />
+            <RecoveryCheck
+              recovery={recovery}
+              setRecovery={setRecovery}
+              onStatusChange={setReadiness}
+            />
 
             <div className="card wide">
               <h2>Recent Workouts</h2>
@@ -111,17 +150,20 @@ export default function App() {
               ) : (
                 completed.slice(0, 5).map((w, i) => (
                   <div className="history" key={i}>
-                    {w.date} · {w.day} · {w.title} · {w.readiness}
+                    {w.date} • {w.day} • {w.title} • {w.readiness}
                   </div>
                 ))
               )}
             </div>
+
           </section>
         )}
 
         {tab === "train" && (
           <section className="card">
+
             <h2>{workout.title}</h2>
+
             <p>{workout.focus}</p>
 
             <div className="button-row">
@@ -137,8 +179,11 @@ export default function App() {
             </div>
 
             <div className="exercise-list">
+
               {workout.exercises.map(([name, goal, intensity]) => {
+
                 const key = `${day}-${name}`;
+
                 const sets = logs[key] || [];
 
                 return (
@@ -154,48 +199,69 @@ export default function App() {
                     }
                   />
                 );
+
               })}
+
             </div>
 
-            <button className="complete" onClick={completeWorkout}>
+            <button
+              className="complete"
+              onClick={completeWorkout}
+            >
               Complete Workout
             </button>
+
           </section>
         )}
 
         {tab === "progress" && (
           <section className="card">
+
             <h2>Strength Targets</h2>
 
             {targets.map(([name, current, target]) => (
               <div className="target" key={name}>
                 <div>
                   <strong>{name}</strong>
+
                   <span>
                     {current} → {target}
-                    {name === "Pull-ups" ? " reps" : " lb"}
+                    {name === "Pull-ups"
+                      ? " reps"
+                      : " lb"}
                   </span>
                 </div>
 
                 <progress
-                  value={Math.round((current / target) * 100)}
+                  value={Math.round(
+                    (current / target) * 100
+                  )}
                   max="100"
                 />
+
               </div>
             ))}
+
           </section>
         )}
 
         {tab === "recovery" && (
-          <section className="grid">
-            <RecoveryCheck recovery={recovery} setRecovery={setRecovery} />
-          </section>
+          <RecoveryCheck
+            recovery={recovery}
+            setRecovery={setRecovery}
+            onStatusChange={setReadiness}
+          />
         )}
 
         {tab === "more" && <AthleteProfile />}
+
       </main>
 
-      <BottomNav tab={tab} setTab={setTab} />
+      <BottomNav
+        tab={tab}
+        setTab={setTab}
+      />
+
     </div>
   );
 }

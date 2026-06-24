@@ -1,3 +1,5 @@
+import { videoLinks } from "./videoLinks";
+
 export default function ExerciseCard({
   name,
   goal,
@@ -6,9 +8,11 @@ export default function ExerciseCard({
   onAddSet,
   onUpdateSet,
 }) {
-  const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+  const fallbackUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
     name + " exercise proper form"
   )}`;
+
+  const videoUrl = videoLinks[name] || fallbackUrl;
 
   return (
     <div className="exercise">
@@ -21,12 +25,7 @@ export default function ExerciseCard({
         </div>
       </div>
 
-      <a
-        className="video-link"
-        href={youtubeSearchUrl}
-        target="_blank"
-        rel="noreferrer"
-      >
+      <a className="video-link" href={videoUrl} target="_blank" rel="noreferrer">
         Watch Demo Video
       </a>
 

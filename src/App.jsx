@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { workouts, targets } from "./data";
+import { workouts, targets, warmup } from "./data";
 import { useLocalStorage } from "./useLocalStorage";
 import ExerciseCard from "./ExerciseCard.jsx";
 import RecoveryCheck from "./RecoveryCheck.jsx";
